@@ -1,8 +1,11 @@
 #include <SFML/Graphics.hpp>
+#include <string>
 #include <iostream>//debug
 #include <vector>
 #define VELOCITY 200 //diminuire per aumentare
 //variabili globali
+sf::Text text;
+sf::Font font;
 sf::RenderWindow window(sf::VideoMode(600,600),"Snake C++/SFML");
 sf::Event event;
 int size = 1;
@@ -12,10 +15,40 @@ sf::RectangleShape food(sf::Vector2f(50,50));
 int direction=0;
 sf::Clock movement;
 sf::Clock spawn;
+void Text(int sizex){
+    switch(sizex){
+        case 1:
+            text.setString("1");
+            break;
+        case 2:
+            text.setString("2");
+            break;
+        case 3:
+            text.setString("3");
+            break;
+        case 4:
+            text.setString("4");
+            break;
+        case 5:
+            text.setString("5");
+            break;
+        case 6:
+            text.setString("6");
+            break;
+        default:
+            text.setString("Too Strong");
+            break;
+    }
+}
 struct{
     int x,y;
 }p[50];
-int main(){  
+int main(){ 
+    font.loadFromFile("The Bugatten.ttf");
+    text.setFont(font);
+    text.setCharacterSize(140);
+    text.setFillColor(sf::Color::Black);
+    text.setPosition(20,-80);
     food.setPosition(window.getSize().x/2, window.getSize().y/2);
     food.setFillColor(sf::Color(0,0,255));
     while (window.isOpen()){
@@ -46,7 +79,7 @@ int main(){
         sf::Time elapsed = movement.getElapsedTime();
         sf::Time elapsed2 = spawn.getElapsedTime();
         if(elapsed.asMilliseconds()>VELOCITY){
-        window.clear();
+        window.clear(sf::Color(128,128,128));
         if(direction==0)p[0].x+=50;
         if(direction==1)p[0].x-=50;
         if(direction==2)p[0].y-=50;
@@ -68,13 +101,21 @@ int main(){
             p[i].y = p[i-1].y;
         }
         
-        cubeHead.setPosition(p[0].x,p[0].y);
-        cubeHead.setFillColor(sf::Color(255,0,0));
-        window.draw(cubeHead);
-        for(int i=1;i<size;i++){
-            cube.setPosition(p[i].x,p[i].y);
-            window.draw(cube);         
+        
+        for(int i=0;i<size;i++){
+            if(i == 0){
+                cubeHead.setPosition(p[0].x,p[0].y);
+                cubeHead.setFillColor(sf::Color(255,0,0));
+                window.draw(cubeHead);
+            }
+            else{
+                cube.setPosition(p[i].x,p[i].y);
+                window.draw(cube);
+            }
+                     
         }
+        Text(size);
+        window.draw(text);
         window.draw(food);
         window.display();
         movement.restart();
