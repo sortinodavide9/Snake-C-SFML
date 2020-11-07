@@ -1,23 +1,17 @@
-#include "headers/Game.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>//debug
 #include <vector>
-#define AGGIORNAMENTO 80 //ogni quanto si reindirizzano gli oggetti
 //variabili globali
+sf::RenderWindow window(sf::VideoMode(600,600),"Snake C++/SFML");
 sf::Event event;
-std::vector <sf::CircleShape> players;
-std::vector <sf::CircleShape> enemies;
-Game *player;
-
-int main()
-{
-    
-    sf::RenderWindow window(sf::VideoMode(800,600),"sf");
-    sf::Clock clockSpawn;//orologio spawn
-    sf::Clock clockMovement;//orologio movimento
-    sf::Clock clockDirection;
-    while (window.isOpen())
-    {
+std::vector <sf::RectangleShape> lista;
+sf::Clock movimento;
+int direction = 0; // 0 destra,1 sinistra, 2 su, 3 giu
+int main(){   
+    sf::RectangleShape snake(sf::Vector2f(50,50));
+    snake.setFillColor(sf::Color(255,0,0));
+    lista.push_back(snake);
+    while (window.isOpen()){
         while(window.pollEvent(event)){
             switch(event.type){
                 case sf::Event::Closed:
@@ -27,61 +21,46 @@ int main()
                         window.close();
                     }
                     else if(event.key.code==sf::Keyboard::Right){      
-                        
+                        if(direction!=0)direction=0;
+                    }
+                    else if(event.key.code==sf::Keyboard::Left){      
+                        if(direction!=1)direction=1;
+                    }
+                    else if(event.key.code==sf::Keyboard::Up){ //2 su    
+                        if(direction!=2)direction=2;
+                    }
+                    else if(event.key.code==sf::Keyboard::Down){ //3 giu     
+                        if(direction!=3)direction=3;
                     }
             }
         }//End event listener
-    int direction;
-    sf::Time elapsed= clockSpawn.getElapsedTime();
-    sf::Time elapsed2 = clockMovement.getElapsedTime();
-    sf::Time elapsed3 = clockDirection.getElapsedTime();
-    
-    if(elapsed.asSeconds()>2){//spawn system
-        sf::CircleShape cerchio(10);
-        cerchio.setFillColor(sf::Color(30,144,255));
-        cerchio.setPosition(cerchio.getPosition().x+rand() % window.getSize().x,cerchio.getPosition().y+rand()% window.getSize().y);
-        players.push_back(cerchio);
-        clockSpawn.restart();
-        direction=1;
-    }
-    if(elapsed2.asMilliseconds()>40){//movement system
-        window.clear();
-        for(auto &i:players){
-            if(direction){//se son passati 2 sec
-                //int temp=rand()%2;
-                int h=0;
-                while(1!=2){
-                    if(elapsed3.asMilliseconds()>=100){
-                        i.move(3,0);
-                        clockDirection.restart();   
-                        h+=1;  
-                    }
-                    if(h>=5){
+        sf::Time elapsed = movimento.getElapsedTime();
+        
+        if(elapsed.asSeconds()>=0.7){//movimento snake
+            window.clear();
+            for(auto &i: lista){
+                switch(direction){
+                    case 0://destra
+                        i.setPosition(i.getPosition().x+50,i.getPosition().y);
                         break;
-                    }
-                }
-                         
-                
-            }
-            window.draw(i);
-            if(i.getPosition().x>=window.getSize().x){//se esce fuori dai bordi start
-                i.setPosition(window.getSize().x-100,i.getPosition().y);
-            }  
-            else if(i.getPosition().x<=0){
-                i.setPosition(100,i.getPosition().y);
-            }
-            else if(i.getPosition().y<=0){
-                i.setPosition(i.getPosition().x,100);
-            }
-            else if(i.getPosition().y>=window.getSize().y){
-
-                i.setPosition(i.getPosition().x,window.getSize().y-100);
-            }//se esce fuori dai bordi end
-        }
-        direction=0;
-        window.display();
-        clockMovement.restart();
-    }//end movement system
+                    case 1://sinistra
+                        i.setPosition(i.getPosition().x-50,i.getPosition().y);
+                        break;
+                    case 2://su
+                        i.setPosition(i.getPosition().x,i.getPosition().y-50);
+                        break;
+                    case 3://giù
+                        i.setPosition(i.getPosition().x,i.getPosition().y+50);
+                        break;
+                }//fine switch
+                window.draw(i);
+                window.display();
+                movimento.restart();//reset clock movimento
+            }//fine movimento
+            
+        }//fine movimento snake
     }//window.close()
     return 0;
-}
+}//fine Main()
+    
+
