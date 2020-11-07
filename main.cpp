@@ -48,15 +48,21 @@ int main()
         window.clear();
         for(auto &i:players){
             if(direction){//se son passati 2 sec
-                int temp=rand()%2;
-                if(temp==0){
-                     i.move(3,0);    
+                //int temp=rand()%2;
+                int h=0;
+                while(1!=2){
+                    if(elapsed3.asMilliseconds()>=100){
+                        i.move(3,0);
+                        clockDirection.restart();   
+                        h+=1;  
+                    }
+                    if(h>=5){
+                        break;
+                    }
                 }
-                else{
-                    i.move(-3,0);
-                }
+                         
+                
             }
-            std::cout<<direction; 
             window.draw(i);
             if(i.getPosition().x>=window.getSize().x){//se esce fuori dai bordi start
                 i.setPosition(window.getSize().x-100,i.getPosition().y);
