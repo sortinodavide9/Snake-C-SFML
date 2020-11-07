@@ -15,6 +15,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(800,600),"sf");
     sf::Clock clockSpawn;//orologio spawn
     sf::Clock clockMovement;//orologio movimento
+    sf::Clock clockDirection;
     while (window.isOpen())
     {
         while(window.pollEvent(event)){
@@ -30,40 +31,34 @@ int main()
                     }
             }
         }//End event listener
+    int direction;
     sf::Time elapsed= clockSpawn.getElapsedTime();
-    sf::Time elapsed2= clockMovement.getElapsedTime();
+    sf::Time elapsed2 = clockMovement.getElapsedTime();
+    sf::Time elapsed3 = clockDirection.getElapsedTime();
+    
     if(elapsed.asSeconds()>2){//spawn system
         sf::CircleShape cerchio(10);
         cerchio.setFillColor(sf::Color(30,144,255));
         cerchio.setPosition(cerchio.getPosition().x+rand() % window.getSize().x,cerchio.getPosition().y+rand()% window.getSize().y);
         players.push_back(cerchio);
         clockSpawn.restart();
+        direction=1;
     }
-    if(elapsed2.asMilliseconds()>10){//movement system
+    if(elapsed2.asMilliseconds()>40){//movement system
         window.clear();
         for(auto &i:players){
-            int temp = rand()%2;
-            switch(temp){
-                case 0://movimento asse x
-                    temp = rand()%2;
-                    if(temp==0){
-                        i.move(3,0);
-                    }
-                    else{
-                        i.move(-3,0);
-                    }
-                    
-                case 1://movimento asse y
-                    temp = rand()%2;
-                    if(temp==0){
-                        i.move(0,3);
-                    }
-                    else{
-                        i.move(0,-3);
-                    }
+            if(direction){//se son passati 2 sec
+                int temp=rand()%2;
+                if(temp==0){
+                     i.move(3,0);    
+                }
+                else{
+                    i.move(-3,0);
+                }
             }
+            std::cout<<direction; 
             window.draw(i);
-            if(i.getPosition().x>=window.getSize().x){
+            if(i.getPosition().x>=window.getSize().x){//se esce fuori dai bordi start
                 i.setPosition(window.getSize().x-100,i.getPosition().y);
             }  
             else if(i.getPosition().x<=0){
@@ -75,11 +70,12 @@ int main()
             else if(i.getPosition().y>=window.getSize().y){
 
                 i.setPosition(i.getPosition().x,window.getSize().y-100);
-            }
+            }//se esce fuori dai bordi end
         }
+        direction=0;
         window.display();
         clockMovement.restart();
-    }
+    }//end movement system
     }//window.close()
     return 0;
 }
