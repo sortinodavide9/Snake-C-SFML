@@ -4,7 +4,7 @@
 class Game{
 public:
     Game();
-    Random();
+    void Movimento();
 private:
 
 };

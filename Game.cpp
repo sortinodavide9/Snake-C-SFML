@@ -5,7 +5,6 @@
 Game::Game(){
 //costruttore Game                
 }
-Game::Random(){
-    return 0;
+void Game::Movimento(){
+    std::cout<<"lel";
 }
-

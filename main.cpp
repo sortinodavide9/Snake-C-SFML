@@ -39,15 +39,28 @@ int main()
         players.push_back(cerchio);
         clockSpawn.restart();
     }
-    if(elapsed2.asMilliseconds()>AGGIORNAMENTO){//movement system
+    if(elapsed2.asMilliseconds()>10){//movement system
         window.clear();
         for(auto &i:players){
             int temp = rand()%2;
             switch(temp){
-                case 0:
-                    i.move(rand()%80-40,0);//
-                case 1:
-                     i.move(0,rand()%80-40);
+                case 0://movimento asse x
+                    temp = rand()%2;
+                    if(temp==0){
+                        i.move(3,0);
+                    }
+                    else{
+                        i.move(-3,0);
+                    }
+                    
+                case 1://movimento asse y
+                    temp = rand()%2;
+                    if(temp==0){
+                        i.move(0,3);
+                    }
+                    else{
+                        i.move(0,-3);
+                    }
             }
             window.draw(i);
             if(i.getPosition().x>=window.getSize().x){
