@@ -6,16 +6,15 @@ sf::RenderWindow window(sf::VideoMode(600,600),"Snake C++/SFML");
 sf::Event event;
 sf::RectangleShape food(sf::Vector2f(50,50));
 sf::Clock movimento;
+sf::Clock spawn;
 int size = 3;
 int direction = 0; // 0 destra, 1 sinistra, 2 su, 3 giu
 sf::RectangleShape head(sf::Vector2f(50,50));
 struct{
     int x,y;
 }p[10];
-void Game(){
-    
-}
 int main(){  
+    food.setPosition(-333,-333);
     while (window.isOpen()){
         while(window.pollEvent(event)){
             switch(event.type){
@@ -44,9 +43,10 @@ int main(){
         }//End event listener
         
         sf::Time elapsed = movimento.getElapsedTime();
+        sf::Time elapsed2 = spawn.getElapsedTime();
+        
         if(elapsed.asSeconds()>0.2){
             window.clear();
-            std::cout<<p[0].x;
             if(direction==0)p[0].x+=50;
             else if(direction==1)p[0].x-=50;
             else if(direction==2)p[0].y-=50;
@@ -55,13 +55,23 @@ int main(){
                 p[i].x = p[i-1].x;
                 p[i].y = p[i-1].y;
             }
-            for(int i=0;i<=size;i++){
+            for(int i=0;i<size;i++){
                 head.setPosition(p[i].x,p[i].y);
                 window.draw(head);
             }
+            window.draw(food);
             window.display();
             movimento.restart();
     }
+    if(p[0].x==food.getPosition().x && p[0].y == food.getPosition().y){
+        size+=1;
+        food.setPosition(23,34);
+    }
+    if(elapsed2.asSeconds()>5){
+            food.setPosition(150,50);
+            spawn.restart();
+            std::cout<<"PASS";
+        }
     }//window.close()
     return 0;
 }//fine Main()
