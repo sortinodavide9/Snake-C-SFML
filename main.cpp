@@ -4,17 +4,17 @@
 //variabili globali
 sf::RenderWindow window(sf::VideoMode(600,600),"Snake C++/SFML");
 sf::Event event;
+int size = 1;
+sf::RectangleShape cube(sf::Vector2f(50,50));
 sf::RectangleShape food(sf::Vector2f(50,50));
-sf::Clock movimento;
+int direction=0;
+sf::Clock movement;
 sf::Clock spawn;
-int size = 3;
-int direction = 0; // 0 destra, 1 sinistra, 2 su, 3 giu
-sf::RectangleShape head(sf::Vector2f(50,50));
 struct{
     int x,y;
-}p[10];
+}p[50];
 int main(){  
-    food.setPosition(-333,-333);
+    food.setPosition(window.getSize().x/2, window.getSize().y/2);
     while (window.isOpen()){
         while(window.pollEvent(event)){
             switch(event.type){
@@ -38,42 +38,41 @@ int main(){
                     else if(event.key.code==sf::Keyboard::Down){ //3 giu     
                         direction=3;
                     }
-                    
-            }
-        }//End event listener
-        
-        sf::Time elapsed = movimento.getElapsedTime();
-        sf::Time elapsed2 = spawn.getElapsedTime();
-        
-        if(elapsed.asSeconds()>0.2){
-            window.clear();
-            if(direction==0)p[0].x+=50;
-            else if(direction==1)p[0].x-=50;
-            else if(direction==2)p[0].y-=50;
-            else if(direction==3)p[0].y+=50;
-            for(int i=size;i>0;i--){
-                p[i].x = p[i-1].x;
-                p[i].y = p[i-1].y;
-            }
-            for(int i=0;i<size;i++){
-                head.setPosition(p[i].x,p[i].y);
-                window.draw(head);
-            }
-            window.draw(food);
-            window.display();
-            movimento.restart();
-    }
-    if(p[0].x==food.getPosition().x && p[0].y == food.getPosition().y){
-        size+=1;
-        food.setPosition(23,34);
-    }
-    if(elapsed2.asSeconds()>5){
-            food.setPosition(150,50);
-            spawn.restart();
-            std::cout<<"PASS";
+            }     
+        }//end event listener
+    sf::Time elapsed = movement.getElapsedTime();
+    sf::Time elapsed2 = spawn.getElapsedTime();
+    if(elapsed.asSeconds()>0.2){
+        window.clear();
+        if(direction==0)p[0].x+=50;
+        if(direction==1)p[0].x-=50;
+        if(direction==2)p[0].y-=50;
+        if(direction==3)p[0].y+=50;
+        if(p[0].x > window.getSize().x || p[0].x<0 || p[0].y > window.getSize().y || p[0].y < 0)window.close();
+        if(p[0].x == food.getPosition().x && p[0].y == food.getPosition().y){
+            int tempx = rand() % 11;
+            int tempy = rand() % 11;
+            int randomx = tempx * 50;
+            int randomy = tempy * 50;
+            std::cout<<"randomx-> "<<randomx<<"\n"<<randomy<<"\n"<<tempx<<"\n"<<tempy<<"\n";
+            food.setPosition(randomx, randomy);
+            size++;
         }
-    }//window.close()
-    return 0;
-}//fine Main()
+        for(int i=size;i>0;i--){
+            p[i].x = p[i-1].x;
+            p[i].y = p[i-1].y;
+        }
+        for(int i=0;i<size;i++){
+            cube.setPosition(p[i].x,p[i].y);
+            window.draw(cube);
+        }
+        window.draw(food);
+        window.display();
+        movement.restart();
+    }
+    
+    }//end game    
+    return 0;    
+}
     
 
