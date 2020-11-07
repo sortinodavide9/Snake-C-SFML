@@ -6,11 +6,16 @@ sf::RenderWindow window(sf::VideoMode(600,600),"Snake C++/SFML");
 sf::Event event;
 sf::RectangleShape food(sf::Vector2f(50,50));
 sf::Clock movimento;
+int size = 3;
 int direction = 0; // 0 destra, 1 sinistra, 2 su, 3 giu
 sf::RectangleShape head(sf::Vector2f(50,50));
-int main(){   
-    head.setFillColor(sf::Color(255,0,0));
+struct{
+    int x,y;
+}p[10];
+void Game(){
     
+}
+int main(){  
     while (window.isOpen()){
         while(window.pollEvent(event)){
             switch(event.type){
@@ -38,25 +43,25 @@ int main(){
             }
         }//End event listener
         
-        sf::Time elapsed = movimento.getElapsedTime();//timer per il movimento
-        if(elapsed.asSeconds()>=0.2){//movimento snake    
+        sf::Time elapsed = movimento.getElapsedTime();
+        if(elapsed.asSeconds()>0.2){
             window.clear();
-            if(direction == 0 )head.setPosition(head.getPosition().x+50,head.getPosition().y);
-            if(direction == 1 )head.setPosition(head.getPosition().x-50,head.getPosition().y);
-            if(direction == 2 )head.setPosition(head.getPosition().x,head.getPosition().y-50);
-            if(direction == 3 )head.setPosition(head.getPosition().x,head.getPosition().y+50);  
-            window.draw(head);
-            window.draw(food);
+            std::cout<<p[0].x;
+            if(direction==0)p[0].x+=50;
+            else if(direction==1)p[0].x-=50;
+            else if(direction==2)p[0].y-=50;
+            else if(direction==3)p[0].y+=50;
+            for(int i=size;i>0;i--){
+                p[i].x = p[i-1].x;
+                p[i].y = p[i-1].y;
+            }
+            for(int i=0;i<=size;i++){
+                head.setPosition(p[i].x,p[i].y);
+                window.draw(head);
+            }
             window.display();
             movimento.restart();
-        }//fine movimento snake 
-
-        //collisione snake-cibo:
-        if(head.getPosition().x == food.getPosition().x && head.getPosition().y == food.getPosition().y){
-            std::cout<<"touch";
-            food.setPosition(200,100);
-        }//fine collisione snake-cibo
-        
+    }
     }//window.close()
     return 0;
 }//fine Main()
